@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app=Flask(__name__)
 
@@ -59,7 +59,27 @@ def operas():
         </form>
     '''
 
+@app.route("/operasBas",  methods=["GET", "POST"])
+def operas1():
+    return render_template("operasBas.html")
 
+@app.route("/resultado", methods=["GET", "POST"])
+def resultado():
+    n1=request.form.get("n1")
+    n2=request.form.get("n2")
+    operacion=request.form.get("opera")
+
+    if operacion == "suma":
+        res = float(n1) + float(n2)
+    elif operacion == "resta":
+        res = float(n1) - float(n2)
+    elif operacion == "multip":
+        res = float(n1) * float(n2)
+    elif operacion == "division":
+        res = float(n1) / float(n2)
+    else:
+        res = 0
+    return f"El resultado de la operación {operacion} es: {res}"
 
 # Con esto inicializamos el archivo
 if __name__ == '__main__':
