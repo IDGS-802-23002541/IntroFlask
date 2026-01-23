@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+import math
 
 app=Flask(__name__)
 
@@ -17,6 +18,25 @@ def formularios():
 @app.route('/reportes')
 def reportes():
     return render_template('reportes.html')
+
+@app.route('/alumnos')
+def alumnos():
+    return render_template('alumnos.html')
+
+@app.route('/distancia', methods=["GET", "POST"])
+def distancia():
+    x1=0
+    x2=0
+    y1=0
+    y2=0
+    res=0
+    if request.method == "POST":
+        x1=int(request.form.get("x1"))
+        x2=int(request.form.get("x2"))
+        y1=int(request.form.get("y1"))
+        y2=int(request.form.get("y2"))
+        res = math.sqrt(((x2 - x1)*(x2-x1) + (y2 - y1)*(y2 - y1)))
+    return render_template('distancia.html',x1=x1,x2=x2,y1=y1,y2=y2,res=res)
 
 # Otra ruta que tiene un metodo que retorna un saludo
 @app.route('/hola')
@@ -61,7 +81,26 @@ def operas():
 
 @app.route("/operasBas",  methods=["GET", "POST"])
 def operas1():
-    return render_template("operasBas.html")
+    n1=0
+    n2=0
+    res=0
+    operacion=''
+    if request.method == "POST":
+        n1=request.form.get("n1")
+        n2=request.form.get("n2")
+        operacion=request.form.get("opera")
+
+    if operacion == "suma":
+        res = float(n1) + float(n2)
+    elif operacion == "resta":
+        res = float(n1) - float(n2)
+    elif operacion == "multip":
+        res = float(n1) * float(n2)
+    elif operacion == "division":
+        res = float(n1) / float(n2)
+    else:
+        res = 0
+    return render_template("operasBas.html",operacion=operacion,n1=n1,n2=n2,res=res)
 
 @app.route("/resultado", methods=["GET", "POST"])
 def resultado():

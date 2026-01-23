@@ -1,7 +1,7 @@
 {% extends "layout.html"%}
 {% block content %}
 
-<form action="/resultado" method="POST">
+<form action="/operasBas" method="POST">
     <div class="mb-3">
         <label for="n1" class="form-label">Numero 1: </label>
         <input type="text" class="form-control" id="n1" name="n1">
@@ -22,6 +22,10 @@
     </div>
     <button type="submit" class="btn btn-primary">Calcular</button>
 </form>
+
+<h2>
+    El resultado de la operación {{operacion}} entre {{n1}} y {{n2}} es: {{"%.2f"|format(res)}}
+</h2>
 
 
 {% endblock %}
