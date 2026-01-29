@@ -1,7 +1,12 @@
 from flask import Flask, render_template, request
+from flask import flash
+from flask_wtf.csrf import CSRFProtect
+import forms
 import math
 
 app=Flask(__name__)
+app.secret_key='Clave secreta'
+csrf=CSRFProtect()
 
 # Renderizamos un archivo estático html [DEBE ESTAR EN LA CARPETA TEMPLEATES]
 @app.route('/')
@@ -37,6 +42,61 @@ def distancia():
         y2=int(request.form.get("y2"))
         res = math.sqrt(((x2 - x1)*(x2-x1) + (y2 - y1)*(y2 - y1)))
     return render_template('distancia.html',x1=x1,x2=x2,y1=y1,y2=y2,res=res)
+
+@app.route('/usuarios', methods=["GET", "POST"])
+def usuarios():
+    matricula=0
+    nom=''
+    apa=''
+    ama=''
+    correo=''
+    usuarios_class=forms.UserForm(request.form)
+
+    if request.method == "POST" and usuarios_class.validate():
+        matricula=usuarios_class.matricula.data
+        nom=usuarios_class.nombre.data
+        apa=usuarios_class.apaterno.data
+        ama=usuarios_class.amaterno.data
+        correo=usuarios_class.correo.data
+
+        mensaje='Bienvenido {}'.format(nom)
+        flash(mensaje)
+
+    return render_template("usuarios.html",form=usuarios_class, matricula=matricula, nom=nom, apa=apa, ama=ama, correo=correo)
+
+@app.route('/cinepolis', methods=["GET", "POST"])
+def cinepolis():
+    Nombre = ""
+    Compradores = 0
+    tarjCine = ""
+    Boletos = 0
+    total = 0
+    error = None
+
+    if request.method == "POST":
+        Nombre = request.form.get("Nombre")
+        Compradores = int(request.form.get("Compradores"))
+        tarjCine = request.form.get("tarjCine") == "true"
+        Boletos = int(request.form.get("Boletos"))
+
+        if not Boletos or not Compradores:
+            error = "Error: Debes ingresar un número de boletos o compradores."
+            return render_template('cinepolis.html', error=error, total=total)
+        
+        if Boletos > Compradores * 7:
+            error = "Error: No se pueden comprar más de 7 boletos por comprador."
+            return render_template('cinepolis.html', error=error, total=total)
+        
+        total = Boletos * 12
+        if Boletos > 5:
+            total = total - (total * 0.15)  # Aplicar descuento del 15% si son 5 boletos
+        if Boletos >= 3 and Boletos <= 5:
+            total = total - (total * 0.10)  # Aplicar descuento del 10% si son entre 3 y 5 boletos
+
+        if tarjCine:
+            total = total - (total * 0.10)  # Aplicar descuento del 10% por tarjeta Cinépolis
+        print(total)
+    return render_template('cinepolis.html', Nombre=Nombre, Compradores=Compradores, tarjCine=tarjCine, Boletos=Boletos, total=total)
 
 # Otra ruta que tiene un metodo que retorna un saludo
 @app.route('/hola')
@@ -122,4 +182,5 @@ def resultado():
 
 # Con esto inicializamos el archivo
 if __name__ == '__main__':
+    csrf.init_app(app)
     app.run(debug=True)

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport">
+    <link href="../static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <title>Cinépolis</title>
+</head>
+
+<body class="bg-primary text-white">
+{% import "_macros.html" as macros %}
+
+<div class="container py-5">
+    <h1 class="text-center mb-4">Cinépolis</h1>
+
+    <!-- Mensaje de error -->
+    {% if error %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endif %}
+
+    <div class="row justify-content-center">
+        <!-- Formulario -->
+        <div class="col-md-8">
+            <div class="card text-dark mb-3">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Datos de compra</h5>
+
+                    <form action="/cinepolis" method="POST">
+                        {{macros.datos("Nombre", "Ingrese su nombre")}}
+                        {{macros.datos("Compradores","Ingrese la cantidad de compradores", "number")}}
+
+                        {{macros.opcion_si_no("¿Cuenta con tarjeta Cine?", "tarjCine")}}
+
+                        {{macros.datos("Boletos","Ingrese la cantidad de boletos", "number")}}
+
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">
+                                Calcular total
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resultado -->
+        <div class="col-md-4">
+            <div class="card text-dark">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Total a pagar</h5>
+                    <hr>
+                    <p class="fs-4 fw-bold text-success">
+                        ${{ "%.2f"|format(total) }}
+                    </p>
+                    <small class="text-muted">
+                        Monto final de los boletos
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="../static/bootstrap/js/bootstrap.bundle.min.js"></script>
+</html>

@@ -4,3 +4,41 @@
     <input type="{{type}}" class="form-control" id="{{name}}" name="{{name}}" placeholder="{{ placeholder}}">
 </div>
 {% endmacro %}
+
+{% macro campoNuevo(field) %}
+<td>{{field.label}}</td>
+<dd>{{field(**kwargs) | safe }}</dd>
+{% if field.errors %}
+    {% for error in field.errors %} 
+        <li style="color: red">{{error}}</li>
+    {% endfor %}
+{% endif %}
+{% endmacro %}
+
+{% macro opcion_si_no(label, name) %}
+<div class="mb-3">
+    <label class="form-label">{{ label }}</label>
+
+    <div class="form-check">
+        <input class="form-check-input"
+               type="radio"
+               name="{{ name }}"
+               id="{{ name }}_true"
+               value="true">
+        <label class="form-check-label" for="{{ name }}_true">
+            Sí
+        </label>
+    </div>
+
+    <div class="form-check">
+        <input class="form-check-input"
+               type="radio"
+               name="{{ name }}"
+               id="{{ name }}_false"
+               value="false">
+        <label class="form-check-label" for="{{ name }}_false">
+            No
+        </label>
+    </div>
+</div>
+{% endmacro %}
