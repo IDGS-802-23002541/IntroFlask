@@ -1,5 +1,5 @@
 from wtforms import Form
-from wtforms import StringField, IntegerField, PasswordField
+from wtforms import StringField, IntegerField, PasswordField, RadioField
 from wtforms import EmailField, validators
 
 class UserForm(Form):
@@ -21,3 +21,22 @@ class UserForm(Form):
         validators.Email(message="Ingrese un correo válido")
     ])
 
+class CinepolisForm(Form):
+    nombre=StringField('Nombre', [
+        validators.DataRequired(message="El campo es requerido")
+    ])
+    compradores=IntegerField('Compradores', [
+        validators.DataRequired(message="El campo es requerido"),
+        validators.NumberRange(min=1, message="Ingresa al menos un comprador")
+    ])
+    tarjeta=RadioField(
+        '¿Cuenta con tarjeta Cinépolsis?',
+        choices=[
+            ('true', 'Sí'),
+            ('false', 'No')
+        ]
+    )
+    boletos=IntegerField('Boletos', [
+        validators.DataRequired(message="El campo es requerido"),
+        validators.NumberRange(min=1, message="Ingresa al menos un boleto")
+    ])

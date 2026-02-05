@@ -12,7 +12,7 @@ csrf=CSRFProtect()
 @app.route('/')
 def index():
     titulo="IDGS-802-Flask"
-    listado=['Juan', 'Karla', 'Miguel']
+    listado=['Juan', 'Karla', 'Miguehl']
     return render_template('index.html', titulo=titulo, lista=listado)
 
 # Ruta para otra página
@@ -72,20 +72,25 @@ def cinepolis():
     Boletos = 0
     total = 0
     error = None
+    cinepolis_class=forms.CinepolisForm(request.form)
 
-    if request.method == "POST":
-        Nombre = request.form.get("Nombre")
-        Compradores = int(request.form.get("Compradores"))
-        tarjCine = request.form.get("tarjCine") == "true"
-        Boletos = int(request.form.get("Boletos"))
+    if request.method == "POST" and cinepolis_class.validate():
+        # Nombre = request.form.get("Nombre")
+        # Compradores = int(request.form.get("Compradores"))
+        # tarjCine = request.form.get("tarjCine") == "true"
+        # Boletos = int(request.form.get("Boletos"))
+        Nombre = cinepolis_class.nombre.data
+        Compradores = cinepolis_class.compradores.data
+        tarjCine = cinepolis_class.tarjeta.data
+        Boletos = cinepolis_class.boletos.data
 
         if not Boletos or not Compradores:
             error = "Error: Debes ingresar un número de boletos o compradores."
-            return render_template('cinepolis.html', error=error, total=total)
+            return render_template('cinepolis.html', form=cinepolis_class, error=error, total=total)
         
         if Boletos > Compradores * 7:
             error = "Error: No se pueden comprar más de 7 boletos por comprador."
-            return render_template('cinepolis.html', error=error, total=total)
+            return render_template('cinepolis.html', form=cinepolis_class, error=error, total=total)
         
         total = Boletos * 12
         if Boletos > 5:
@@ -93,10 +98,10 @@ def cinepolis():
         if Boletos >= 3 and Boletos <= 5:
             total = total - (total * 0.10)  # Aplicar descuento del 10% si son entre 3 y 5 boletos
 
-        if tarjCine:
+        if tarjCine == "true":
             total = total - (total * 0.10)  # Aplicar descuento del 10% por tarjeta Cinépolis
         print(total)
-    return render_template('cinepolis.html', Nombre=Nombre, Compradores=Compradores, tarjCine=tarjCine, Boletos=Boletos, total=total)
+    return render_template('cinepolis.html', form=cinepolis_class,Nombre=Nombre, Compradores=Compradores, tarjCine=tarjCine, Boletos=Boletos, total=total)
 
 # Otra ruta que tiene un metodo que retorna un saludo
 @app.route('/hola')

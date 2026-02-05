@@ -28,13 +28,16 @@
                 <div class="card-body">
                     <h5 class="card-title mb-3">Datos de compra</h5>
 
-                    <form action="/cinepolis" method="POST">
-                        {{macros.datos("Nombre", "Ingrese su nombre")}}
-                        {{macros.datos("Compradores","Ingrese la cantidad de compradores", "number")}}
+                    <form action="/cinepolis" method="POST" novalidate>
+                        {{form.csrf_token}}
+                        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
 
-                        {{macros.opcion_si_no("¿Cuenta con tarjeta Cine?", "tarjCine")}}
+                        {{macros.campoNuevo(form.nombre, class="form-control")}}
+                        {{macros.campoNuevo(form.compradores, class="form-control")}}
 
-                        {{macros.datos("Boletos","Ingrese la cantidad de boletos", "number")}}
+                        {{macros.opcion(form.tarjeta)}}
+
+                        {{macros.campoNuevo(form.boletos, class="form-control")}}
 
                         <div class="text-end">
                             <button type="submit" class="btn btn-primary">
